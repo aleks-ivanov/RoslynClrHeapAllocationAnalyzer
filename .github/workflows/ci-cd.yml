@@ -1,0 +1,26 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+
+jobs:
+  ci:
+    name: Continuous Integration
+    runs-on: windows-latest
+    steps:
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Restore PerMonitorAware solution
+        run: |
+          nuget restore ClrHeapAllocationAnalyzer.sln
+
+      - name: Build PerMonitorAware solution
+        run: |
+          msbuild ClrHeapAllocationAnalyzer.sln
